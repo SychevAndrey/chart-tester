@@ -1,0 +1,23 @@
+.chart {
+  display: flex;
+  flex-wrap: wrap;
+
+  margin: 2rem;
+  width: 442px;
+}
+
+.chart-cell {
+  margin: 2px;
+  width: 30px;
+  height: 30px;
+  background-color: beige;
+}
+
+.active {
+  background-color: cadetblue;
+}
+
+.chart-cell:hover {
+  background-color: lightslategray;
+  cursor: pointer;
+}
