@@ -1,19 +1,21 @@
-const initialState = {
-  question: {
-    allin: [],
-  },
-  answer: {
-    allin: [],
-  },
-};
+import updateAnswer from './answer';
+import updateQuestion from './question';
 
-export const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'ADD_ALLIN':
-      const newState = state.answer.allin.push(action.payload)
-      return {
-        newState
-      }
-      default: return state;
+export const reducer = (state, action) => {
+  return {
+    question: updateQuestion(state, action),
+    answer: updateAnswer(state, action),
+    flag: updateFlag(state, action),
   }
 };
+
+
+const updateFlag = (state , action) => {
+  if (action.type === "ANSWER_UPDATE_FLAG") {
+    return action.payload ;
+  }
+  if (state === undefined) {
+    return "allin";
+  }
+  return state.flag;
+}

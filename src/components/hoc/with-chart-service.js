@@ -2,7 +2,7 @@ import React from 'react';
 import { ChartServiceConsumer } from "../chart-service-context";
 
 
-const withChartSerivce = () => (Wrapped) => {
+const withChartService = () => (Wrapped) => {
   return (props) => {
     return (
       <ChartServiceConsumer>
@@ -16,4 +16,4 @@ const withChartSerivce = () => (Wrapped) => {
   }
 };
 
-export default withChartSerivce;
+export default withChartService;
