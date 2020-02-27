@@ -1,34 +1,50 @@
 import React from 'react'
 import './chart.css';
-import withChartService from '../hoc/with-chart-service';
 import template from '../../data/template';
-import { handAddedtoAnswer, flagChanged } from '../../actions'
+import { handAddedtoAnswer } from '../../actions'
 import { connect } from 'react-redux';
 
 class Chart extends React.Component {
   constructor() {
     super();
     this.el = document.getElementById("root");
-
     this.el.addEventListener('mouseout', (e) => {
       if (e.target.className.indexOf("chart-cell") !== -1 && e.buttons & 1) {
-        this.handSelector(e.target.innerHTML, e.target.id);
+        this.props.handAddedtoAnswer(e.target.innerHTML);
       }
     });
   };
 
-  checkAnswer = () => {
-    const { answer, question } = this.props;
-    console.log(question, answer);
+  coloringHands = () => {
+    //TODO : REFACTOR THIS SHIT
+    const { answer: {allin, raise, fold, iso, isos, limp, check} } = this.props;
+    const chart = document.getElementById('chart');
+    const defaultClassName = 'chart-cell';
+    
+    for (let i = 0; i < 169; i++) {
+      if (allin.indexOf(chart.children[i].id) >= 0) {
+        chart.children[i].className = defaultClassName + ' allin pressed';
+      } else if (raise.indexOf(chart.children[i].id) >= 0) {
+        chart.children[i].className = defaultClassName + ' raise';
+      } else if (fold.indexOf(chart.children[i].id) >= 0) {
+        chart.children[i].className = defaultClassName + ' fold';
+      } else if (iso.indexOf(chart.children[i].id) >= 0) {
+        chart.children[i].className = defaultClassName + ' iso';
+      } else if (isos.indexOf(chart.children[i].id) >= 0) {
+        chart.children[i].className = defaultClassName + ' isos';
+      } else if (limp.indexOf(chart.children[i].id) >= 0) {
+        chart.children[i].className = defaultClassName + ' limp';
+      } else if (check.indexOf(chart.children[i].id) >= 0) {
+        chart.children[i].className = defaultClassName + ' check';
+      }else {
+        chart.children[i].className = defaultClassName;
+      }
+    }
   }
 
-  handSelector = (hand, id) => {
-    const { handAddedtoAnswer, flag } = this.props;
-    document
-      .getElementById(id)
-      .classList.add(flag);
-    handAddedtoAnswer(hand);
-  };
+  componentDidUpdate() {
+    this.coloringHands();
+  }
 
   render() {
     const hands = template().map((hand, index) => {
@@ -38,49 +54,25 @@ class Chart extends React.Component {
           id={id}
           className="chart-cell"
           key={index}
-          onClick={() => this.handSelector(hand, id)}
+          onClick={() => this.props.handAddedtoAnswer(hand)}
         >
           {hand}
         </div>
       );
     });
-
     return (
-    <>
-      <div className="chart">
+      <div id="chart" className="chart">
         {hands}
       </div>
-        <button 
-          type="button" 
-          className="btn btn-primary"
-          onClick={() => this.checkAnswer()}>
-          Сравнить
-        </button>
-        <button
-          type="button"
-          className="btn btn-info"
-          onClick={() => this.props.changeFlag('allin')}>
-          PUSH
-        </button>
-        <button
-          type="button"
-          className="btn btn-warning"
-          onClick={() => this.props.changeFlag('raise')}>
-          RAISE
-        </button>
-    </>
     );
   }
 };
 
-const mapStateToProps = ({ answer, question, flag }) => {
-  return { answer, question, flag };
+const mapStateToProps = ({ answer, flag }) => {
+  return { answer, flag };
 }
-const mapDispatchToProps = (dispatch) => {
-  return {
-    handAddedtoAnswer: (hand, flag) => dispatch(handAddedtoAnswer(hand, flag)),
-    changeFlag: (flag) => dispatch(flagChanged(flag)),
-  }
+const mapDispatchToProps = {
+  handAddedtoAnswer,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withChartService()(Chart));
+export default connect(mapStateToProps, mapDispatchToProps)(Chart);

@@ -1,45 +1,36 @@
+let InitialQuestion = {};
+
+Object.defineProperty(InitialQuestion, 'loading', {
+  value: false,
+  enumerable: false
+});
+
+Object.defineProperty(InitialQuestion, 'error', {
+  value: null,
+  enumerable: false,
+})
+
 const updateQuestion = (state, action) => {
   if (state === undefined) {
     return {
-      allin: [],
-      fold: [],
-      raise: [],
-      iso: [],
-      isos: [],
-      loading: true,
-      error: null,
+      ...InitialQuestion
     }
   }
   switch (action.type) {
     case 'FETCH_QUESTION_REQUEST':
       return {
-        allin: [],
-        fold: [],
-        raise: [],
-        iso: [],
-        isos: [],
+        ...InitialQuestion,
         loading: true,
-        error: null
       };
     case 'FETCH_QUESTION_SUCCESS':
-      const { allin, fold, raise, iso, isos } = action.payload;
+      const { ...props } = action.payload;
       return {
-        allin,
-        fold,
-        raise,
-        iso,
-        isos,
-        loading: false,
-        error: null,
+        ...props,
+        ...InitialQuestion,
       };
     case 'FETCH_QUESTION_FAILURE':
       return {
-        allin: [],
-        fold: [],
-        raise: [],
-        iso: [],
-        isos: [],
-        loading: false,
+        ...InitialQuestion,
         error: action.payload,
       };
     
